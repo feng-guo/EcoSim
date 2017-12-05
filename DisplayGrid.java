@@ -58,14 +58,43 @@ class DisplayGrid {
       Image eatingWolf = Toolkit.getDefaultToolkit().getImage("EatingWolf.png");
       Image dirt = Toolkit.getDefaultToolkit().getImage("Dirt.jpg");
       Image plant = Toolkit.getDefaultToolkit().getImage("Plant.jpg");
-      Image villager = Toolkit.getDefaultToolkit().getImage("Aaron.png");
+      Image villager = Toolkit.getDefaultToolkit().getImage("Villager.png");
+      Image babyVillager = Toolkit.getDefaultToolkit().getImage("BabyVillager.png");
+      Image sugarCane = Toolkit.getDefaultToolkit().getImage("SugarCane.png");;
+      Image corn = Toolkit.getDefaultToolkit().getImage("Corn.png");
+      Image wheat = Toolkit.getDefaultToolkit().getImage("Wheat.png");
+      Image potato = Toolkit.getDefaultToolkit().getImage("Potato.png");
+      Image carrot = Toolkit.getDefaultToolkit().getImage("Carrot.png");
+      Image apple = Toolkit.getDefaultToolkit().getImage("Apple.png");
+      Image seeds = Toolkit.getDefaultToolkit().getImage("Seeds.png");
+      Image weed = Toolkit.getDefaultToolkit().getImage("Weed.png");
+      
+      
       
       for(int i = 0; i<world[0].length;i=i+1) { 
         for(int j = 0; j<world.length;j=j+1) { 
           if (world[i][j] == null) {
             g.drawImage(dirt,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
           } else if (world[i][j] instanceof Plant) {
-            g.drawImage(grass,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            if (world[i][j] instanceof SugarCane) {
+              g.drawImage(sugarCane,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            } else if (world[i][j] instanceof Corn) {
+              g.drawImage(corn,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            } else if (world[i][j] instanceof Wheat) {
+              g.drawImage(wheat,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            } else if (world[i][j] instanceof Potato) {
+              g.drawImage(potato,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            } else if (world[i][j] instanceof Carrot) {
+              g.drawImage(carrot,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            } else if (world[i][j] instanceof Apple) {
+              g.drawImage(apple,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            } else if (world[i][j] instanceof Seeds) {
+              g.drawImage(seeds,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            } else if (world[i][j] instanceof Weed) {
+              g.drawImage(weed,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            } else {
+              g.drawImage(grass,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            }
           } else if (world[i][j] instanceof Wolf) {
             if (world[i][j].getHasEaten()) {
               g.drawImage(eatingWolf,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
@@ -79,7 +108,11 @@ class DisplayGrid {
               g.drawImage(sheep,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             }
           } else if (world[i][j] instanceof Villager) {
-            g.drawImage(villager,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            if (world[i][j].getAge() < 20) {
+              g.drawImage(babyVillager,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            } else {
+              g.drawImage(villager,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            }
           }
           //g.fillRect(j*GridToScreenRatio, i*GridToScreenRatio, GridToScreenRatio, GridToScreenRatio);
           //g.setColor(Color.BLACK);

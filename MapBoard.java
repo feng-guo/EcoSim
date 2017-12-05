@@ -563,7 +563,7 @@ class MapBoard {
       } else if (board[spaceY][spaceX] instanceof Animal && organism instanceof Animal && (organism.getGender() != board[spaceY][spaceX].getGender())) {
         if (organism instanceof Sheep) {
           int counter = 0; //max 5 sheep babies or else the board becomes too wild
-          while (board[spaceY][spaceX].getHealth() > 20 && organism.getHealth() > 20 && counter<6) {
+          while (board[spaceY][spaceX].getHealth() > 20 && organism.getHealth() > 20 && counter<3) {
             counter++;
             Sheep e = new Sheep(20);
             randomizeGender(e);
