@@ -69,8 +69,10 @@ abstract class Organism implements Moveable{
   
   abstract boolean getGender();
   abstract boolean getMoved();
+  abstract boolean getHasEaten();
   abstract void setGender(boolean gender);
   abstract void setMoved(boolean moved);
+  abstract void setHasEaten(boolean hasEaten);
 }
 
 abstract class Plant extends Organism {
@@ -91,8 +93,13 @@ abstract class Plant extends Organism {
     //This should never be called for a plant
     return true;
   }
+   public boolean getHasEaten() {
+    //This should never be called for a plant
+    return true;
+  }
   public void setGender(boolean gender){};
   public void setMoved(boolean moved){};
+  public void setHasEaten(boolean hasEaten){};
 }
 
 class SugarCane extends Plant {
@@ -171,16 +178,19 @@ class Weed extends Plant {
 abstract class Animal extends Organism {
   private boolean gender;
   private boolean moved;
+  private boolean hasEaten;
   
   Animal(int health) {
     super(health);
     moved = true;
+    hasEaten = false;
   }
   
   Animal(int x, int y, int health, boolean gender) {
     super(x, y, health);
     this.gender = gender;
     moved = true;
+    hasEaten = false;
   }
   
   public void setGender(boolean gender) {
@@ -189,13 +199,18 @@ abstract class Animal extends Organism {
   public void setMoved(boolean moved) {
     this.moved = moved;
   }
+  public void setHasEaten(boolean hasEaten) {
+    this.hasEaten = hasEaten;
+  }
   
   public boolean getGender() {
     return gender;
   }
-  
   public boolean getMoved() {
     return moved;
+  }
+  public boolean getHasEaten() {
+    return hasEaten;
   }
 }
 
@@ -216,3 +231,13 @@ class Wolf extends Animal {
     super(x, y, health, gender);
   }
 }
+
+class Villager extends Animal {
+  Villager(int health) {
+    super(health);
+  }
+  Villager (int x, int y, int health, boolean gender) {
+    super(x, y, health, gender);
+  }
+}
+  

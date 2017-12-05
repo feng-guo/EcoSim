@@ -53,9 +53,12 @@ class DisplayGrid {
       //g.setColor(Color.WHITE);
       Image grass = Toolkit.getDefaultToolkit().getImage("GrassTexture.png");
       Image sheep = Toolkit.getDefaultToolkit().getImage("Sheep.png");
+      Image eatingSheep = Toolkit.getDefaultToolkit().getImage("EatingSheep.png");
       Image wolf = Toolkit.getDefaultToolkit().getImage("Wolf.png");
+      Image eatingWolf = Toolkit.getDefaultToolkit().getImage("EatingWolf.png");
       Image dirt = Toolkit.getDefaultToolkit().getImage("Dirt.jpg");
       Image plant = Toolkit.getDefaultToolkit().getImage("Plant.jpg");
+      Image villager = Toolkit.getDefaultToolkit().getImage("Aaron.png");
       
       for(int i = 0; i<world[0].length;i=i+1) { 
         for(int j = 0; j<world.length;j=j+1) { 
@@ -64,9 +67,19 @@ class DisplayGrid {
           } else if (world[i][j] instanceof Plant) {
             g.drawImage(grass,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
           } else if (world[i][j] instanceof Wolf) {
-            g.drawImage(wolf,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            if (world[i][j].getHasEaten()) {
+              g.drawImage(eatingWolf,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            } else {
+              g.drawImage(wolf,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            }
           } else if (world[i][j] instanceof Sheep) {
-            g.drawImage(sheep,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            if (world[i][j].getHasEaten()) {
+              g.drawImage(eatingSheep,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            } else {
+              g.drawImage(sheep,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            }
+          } else if (world[i][j] instanceof Villager) {
+            g.drawImage(villager,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
           }
           //g.fillRect(j*GridToScreenRatio, i*GridToScreenRatio, GridToScreenRatio, GridToScreenRatio);
           //g.setColor(Color.BLACK);

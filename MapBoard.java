@@ -3,17 +3,19 @@ class MapBoard {
   private int length;
   private int width;
   private int plantNutrition;
+  private boolean intelligence;
   
   MapBoard() {
     board = new Organism[25][25];
     this.plantNutrition = 1;
   }
   
-  MapBoard(int length, int width, int plantNutrition) {
+  MapBoard(int length, int width, int plantNutrition, boolean intelligence) {
     board = new Organism[length][width];
     this.length = length;
     this.width = width;
     this.plantNutrition = plantNutrition;
+    this.intelligence = intelligence;
   }
   
   public Organism[][] getBoard() {
@@ -26,7 +28,10 @@ class MapBoard {
   
   public void age(Organism o) {
     o.changeAge(1);
-    if (o instanceof Animal) {
+    if (o instanceof Villager) {
+      int healthLost = (int)Math.ceil(o.getAge()*0.001); //Piecewise aging
+      o.changeHealth(-healthLost);
+    } else if (o instanceof Animal) {
       int healthLost = (int)Math.ceil(o.getAge()*0.01); //Piecewise aging
       o.changeHealth(-healthLost);
     } else if (o instanceof Plant) {
@@ -50,122 +55,125 @@ class MapBoard {
     int direction;
     boolean triedMoving = false;
     //Smart moving for wolves
-    if (a instanceof Wolf) {
-      if (a.getX() != 0) {
-        if (board[a.getY()][a.getX()-1] != null) {
-          if (board[a.getY()][a.getX()-1] instanceof Sheep) {
-            moveAnimal(a, 0);
-            triedMoving = true;
+    if (intelligence) {
+      if (a instanceof Wolf) {
+        if (a.getX() != 0) {
+          if (board[a.getY()][a.getX()-1] != null) {
+            if (board[a.getY()][a.getX()-1] instanceof Sheep) {
+              moveAnimal(a, 0);
+              triedMoving = true;
+            }
+          }
+        }
+        if (a.getX() != width-1 && !triedMoving) {
+          if (board[a.getY()][a.getX()+1] != null) {
+            if (board[a.getY()][a.getX()+1] instanceof Sheep) {
+              moveAnimal(a, 1);
+              triedMoving = true;
+            }
+          }
+        }
+        if (a.getY() != 0 && !triedMoving) {
+          if (board[a.getY()-1][a.getX()] != null) {
+            if (board[a.getY()-1][a.getX()] instanceof Sheep) {
+              moveAnimal(a, 2);
+              triedMoving = true;
+            }
+          }
+        }
+        if (a.getY() != length-1 && !triedMoving) {
+          if (board[a.getY()+1][a.getX()] != null) {
+            if (board[a.getY()+1][a.getX()] instanceof Sheep) {
+              moveAnimal(a, 3);
+              triedMoving = true;
+            }
           }
         }
       }
-      if (a.getX() != width-1 && !triedMoving) {
-        if (board[a.getY()][a.getX()+1] != null) {
-          if (board[a.getY()][a.getX()+1] instanceof Sheep) {
-            moveAnimal(a, 1);
-            triedMoving = true;
+      //Makes sheep want to eat if they are next to food and are hungry
+      if (a instanceof Sheep && !triedMoving) {
+        int highestNutrition = 0;
+        direction= 5; //Should be changed later on
+        if (a.getX() != 0) {
+          if (board[a.getY()][a.getX()-1] != null) {
+            if (board[a.getY()][a.getX()-1] instanceof Plant && board[a.getY()][a.getX()-1].getHealth() > highestNutrition) {
+              highestNutrition = board[a.getY()][a.getX()-1].getHealth();
+              direction = 0;
+            }
           }
         }
-      }
-      if (a.getY() != 0 && !triedMoving) {
-        if (board[a.getY()-1][a.getX()] != null) {
-          if (board[a.getY()-1][a.getX()] instanceof Sheep) {
-            moveAnimal(a, 2);
-            triedMoving = true;
+        if (a.getX() != width-1) {
+          if (board[a.getY()][a.getX()+1] != null) {
+            if (board[a.getY()][a.getX()+1] instanceof Plant && board[a.getY()][a.getX()+1].getHealth() > highestNutrition) {
+              highestNutrition = board[a.getY()][a.getX()+1].getHealth();
+              direction = 1;
+            }
           }
         }
-      }
-      if (a.getY() != length-1 && !triedMoving) {
-        if (board[a.getY()+1][a.getX()] != null) {
-          if (board[a.getY()+1][a.getX()] instanceof Sheep) {
-            moveAnimal(a, 3);
-            triedMoving = true;
+        if (a.getY() != 0) {
+          if (board[a.getY()-1][a.getX()] != null) {
+            if (board[a.getY()-1][a.getX()] instanceof Plant && board[a.getY()-1][a.getX()].getHealth() > highestNutrition) {
+              highestNutrition = board[a.getY()-1][a.getX()].getHealth();
+              direction = 2;
+            }
           }
         }
-      }
-    }
-    //Makes sheep want to mate if they have a stable life
-    if (a instanceof Sheep && a.getHealth() > 40) {
-      if (a.getX() != 0) {
-        if (board[a.getY()][a.getX()-1] != null) {
-          if (board[a.getY()][a.getX()-1] instanceof Sheep && board[a.getY()][a.getX()-1].getHealth() > 40) {
-            moveAnimal(a, 0);
-            triedMoving = true;
+        if (a.getY() != length-1) {
+          if (board[a.getY()+1][a.getX()] != null) {
+            if (board[a.getY()+1][a.getX()] instanceof Plant && board[a.getY()+1][a.getX()].getHealth() > highestNutrition) {
+              highestNutrition = board[a.getY()+1][a.getX()].getHealth();
+              direction = 3;
+            }
           }
         }
-      }
-      if (a.getX() != width-1 && !triedMoving) {
-        if (board[a.getY()][a.getX()+1] != null) {
-          if (board[a.getY()][a.getX()+1] instanceof Sheep && board[a.getY()][a.getX()+1].getHealth() > 40) {
-            moveAnimal(a, 1);
-            triedMoving = true;
-          }
+        if (direction == 5) {
+          //If the direction has not changed, then direction would remain as 5, and therefore must move randomly
+          triedMoving = false;
+        } else {
+          //If direction != 5, then it was changed and then must move in the direction desired
+          moveAnimal(a, direction);
+          triedMoving = true;
         }
       }
-      if (a.getY() != 0 && !triedMoving) {
-        if (board[a.getY()-1][a.getX()] != null) {
-          if (board[a.getY()-1][a.getX()] instanceof Sheep && board[a.getY()-1][a.getX()].getHealth() > 40) {
-            moveAnimal(a, 2);
-            triedMoving = true;
+      //Makes sheep want to mate if they have a stable life
+      if (a instanceof Sheep && a.getHealth() > 40) {
+        if (a.getX() != 0) {
+          if (board[a.getY()][a.getX()-1] != null) {
+            if (board[a.getY()][a.getX()-1] instanceof Sheep && board[a.getY()][a.getX()-1].getHealth() > 40) {
+              moveAnimal(a, 0);
+              triedMoving = true;
+            }
           }
         }
-      }
-      if (a.getY() != length-1 && !triedMoving) {
-        if (board[a.getY()+1][a.getX()] != null) {
-          if (board[a.getY()+1][a.getX()] instanceof Sheep && board[a.getY()+1][a.getX()].getHealth() > 40) {
-            moveAnimal(a, 3);
-            triedMoving = true;
+        if (a.getX() != width-1 && !triedMoving) {
+          if (board[a.getY()][a.getX()+1] != null) {
+            if (board[a.getY()][a.getX()+1] instanceof Sheep && board[a.getY()][a.getX()+1].getHealth() > 40) {
+              moveAnimal(a, 1);
+              triedMoving = true;
+            }
           }
         }
-      }
-    }
-    //Makes sheep want to eat if they are next to food and are hungry
-    if (a instanceof Sheep && !triedMoving) {
-      int highestNutrition = 0;
-      direction= 5; //Should be changed later on
-      if (a.getX() != 0) {
-        if (board[a.getY()][a.getX()-1] != null) {
-          if (board[a.getY()][a.getX()-1] instanceof Plant && board[a.getY()][a.getX()-1].getHealth() > highestNutrition) {
-            highestNutrition = board[a.getY()][a.getX()-1].getHealth();
-            direction = 0;
+        if (a.getY() != 0 && !triedMoving) {
+          if (board[a.getY()-1][a.getX()] != null) {
+            if (board[a.getY()-1][a.getX()] instanceof Sheep && board[a.getY()-1][a.getX()].getHealth() > 40) {
+              moveAnimal(a, 2);
+              triedMoving = true;
+            }
           }
         }
-      }
-      if (a.getX() != width-1) {
-        if (board[a.getY()][a.getX()+1] != null) {
-          if (board[a.getY()][a.getX()+1] instanceof Plant && board[a.getY()][a.getX()+1].getHealth() > highestNutrition) {
-            highestNutrition = board[a.getY()][a.getX()+1].getHealth();
-            direction = 1;
+        if (a.getY() != length-1 && !triedMoving) {
+          if (board[a.getY()+1][a.getX()] != null) {
+            if (board[a.getY()+1][a.getX()] instanceof Sheep && board[a.getY()+1][a.getX()].getHealth() > 40) {
+              moveAnimal(a, 3);
+              triedMoving = true;
+            }
           }
         }
-      }
-      if (a.getY() != 0) {
-        if (board[a.getY()-1][a.getX()] != null) {
-          if (board[a.getY()-1][a.getX()] instanceof Plant && board[a.getY()-1][a.getX()].getHealth() > highestNutrition) {
-            highestNutrition = board[a.getY()-1][a.getX()].getHealth();
-            direction = 2;
-          }
-        }
-      }
-      if (a.getY() != length-1) {
-        if (board[a.getY()+1][a.getX()] != null) {
-          if (board[a.getY()+1][a.getX()] instanceof Plant && board[a.getY()+1][a.getX()].getHealth() > highestNutrition) {
-            highestNutrition = board[a.getY()+1][a.getX()].getHealth();
-            direction = 3;
-          }
-        }
-      }
-      if (direction == 5) {
-        //If the direction has not changed, then direction would remain as 5, and therefore must move randomly
-        triedMoving = false;
-      } else {
-        //If direction != 5, then it was changed and then must move in the direction desired
-        moveAnimal(a, direction);
-        triedMoving = true;
       }
     }
     if (!triedMoving) {
       //Randomly moves in a direction
+      //Villagers move randomly because they're dumb in minecraft
       direction = (int) Math.floor(Math.random() * 4);
       moveAnimal(a, direction);
     }
@@ -173,8 +181,15 @@ class MapBoard {
   
   public void changeMoved(int y, int x) {
     if (board[y][x] == null) {
-    } else if (board[y][x] instanceof Wolf || board[y][x] instanceof Sheep) {
+    } else if (board[y][x] instanceof Animal) {
       board[y][x].setMoved(false);
+    }
+  }
+  
+  public void changeHasEaten(int y, int x) {
+    if (board[y][x] == null) {
+    } else if (board[y][x] instanceof Animal) {
+      board[y][x].setHasEaten(false);
     }
   }
   
@@ -182,26 +197,39 @@ class MapBoard {
     if (board[o.getY()][o.getX()] == null) {
       board[o.getY()][o.getX()] = o;
     } else if (board[o.getY()][o.getX()] instanceof Plant && !(o instanceof Plant)) {
-      if (o instanceof Sheep) {
-        //If a baby sheep spawns on food, it consumes it
+      if (o instanceof Sheep || o instanceof Villager) {
+        //If a baby spawns on food, it consumes it
         o.changeHealth(board[o.getY()][o.getX()].getHealth());
         board[o.getY()][o.getX()] = o;
+        o.setHasEaten(true);
       } else {
         //Wolves aren't vegan
         board[o.getY()][o.getX()] = o;
       }
     } else if (!(o instanceof Plant)) {
       //If a plant tries to spawn on an occupied space, it doesn't spawn
-      boolean boardFull = true;
+      double boardCounter = 0;
+      double area = length*width;
       for (int i=0; i<length; i++) {
         for (int j=0; j<width; j++) {
-          if (board[o.getY()][o.getX()] == null) {
-            boardFull = false;
+          if (board[i][j] == null) {
+            boardCounter++;
           }
         }
       }
-      if (!boardFull) {
+      if ((boardCounter/area) > 0.3) {
+        //Allows random spawning until a certain point when it gets tedious
         randomizeCoordinates(o);
+      } else if (boardCounter != area) {
+        for (int i=0; i<length; i++) {
+          for (int j=0; j<width; j++) {
+            if (board[i][j] == null) {
+              o.setX(j);
+              o.setY(i);
+              addOrganism(o);
+            }
+          }
+        }
       }
     }
   }
@@ -239,18 +267,18 @@ class MapBoard {
     }
   }
   
-  public void randomizeCoordinates(Organism o) {
-    o.setY((int)(Math.floor(Math.random() * length)));
-    o.setX((int)(Math.floor(Math.random() * width)));
-    addOrganism(o);
+  public void randomizeCoordinates(Organism organism) {
+    organism.setY((int)(Math.floor(Math.random() * length)));
+    organism.setX((int)(Math.floor(Math.random() * width)));
+    addOrganism(organism);
   }
   
-  public void randomizeGender(Animal o) {
+  public void randomizeGender(Animal animal) {
     int random = (int)(Math.floor(Math.random() * 2));
     if (random == 0) {
-      o.setGender(true);
+      animal.setGender(true);
     } else {
-      o.setGender(false);
+      animal.setGender(false);
     }
   }
   
@@ -313,6 +341,86 @@ class MapBoard {
     }
   }
   
+  public void decidePlant(Villager farmer) {
+    int decision;
+    decision = (int) Math.floor(Math.random() * 10);
+    if (decision >= 7) {
+      villagerRampage(farmer);
+    }
+  }
+  
+  public void villagerRampage(Villager farmer) {
+    //farmers can plant all around them if they decide to
+    if (farmer.getX() != 0 && farmer.getX() != width-1 && farmer.getY() != 0 && farmer.getY() != length-1) {
+      Plant plantedSeed;
+      plantedSeed = new Seeds(farmer.getX(), farmer.getY()-1);
+      board[farmer.getY()-1][farmer.getX()] = plantedSeed;
+      plantedSeed = new Seeds(farmer.getX(), farmer.getY()+1);
+      board[farmer.getY()+1][farmer.getX()] = plantedSeed;
+      plantedSeed = new Seeds(farmer.getX()-1, farmer.getY());
+      board[farmer.getY()][farmer.getX()-1] = plantedSeed;
+      plantedSeed = new Seeds(farmer.getX()+1, farmer.getY());
+      board[farmer.getY()][farmer.getX()+1] = plantedSeed;
+    } else if (farmer.getX() == 0 && farmer.getY() == 0) {
+      Plant plantedSeed;
+      plantedSeed = new Seeds(farmer.getX(), farmer.getY()+1);
+      board[farmer.getY()+1][farmer.getX()] = plantedSeed;
+      plantedSeed = new Seeds(farmer.getX()+1, farmer.getY());
+      board[farmer.getY()][farmer.getX()+1] = plantedSeed;
+    } else if (farmer.getX() == width-1 && farmer.getY() == 0) {
+      Plant plantedSeed;
+      plantedSeed = new Seeds(farmer.getX(), farmer.getY()+1);
+      board[farmer.getY()+1][farmer.getX()] = plantedSeed;
+      plantedSeed = new Seeds(farmer.getX()-1, farmer.getY());
+      board[farmer.getY()][farmer.getX()-1] = plantedSeed;
+    } else if (farmer.getX() == 0 && farmer.getY() == length-1) {
+      Plant plantedSeed;
+      plantedSeed = new Seeds(farmer.getX(), farmer.getY()-1);
+      board[farmer.getY()-1][farmer.getX()] = plantedSeed;
+      plantedSeed = new Seeds(farmer.getX()+1, farmer.getY());
+      board[farmer.getY()][farmer.getX()+1] = plantedSeed;
+    } else if (farmer.getX() == width-1 && farmer.getY() == length-1) {
+      Plant plantedSeed;
+      plantedSeed = new Seeds(farmer.getX(), farmer.getY()-1);
+      board[farmer.getY()-1][farmer.getX()] = plantedSeed;
+      plantedSeed = new Seeds(farmer.getX()-1, farmer.getY());
+      board[farmer.getY()][farmer.getX()-1] = plantedSeed;
+    } else if (farmer.getX() == 0) {
+      Plant plantedSeed;
+      plantedSeed = new Seeds(farmer.getX(), farmer.getY()+1);
+      board[farmer.getY()+1][farmer.getX()] = plantedSeed;
+      plantedSeed = new Seeds(farmer.getX(), farmer.getY()-1);
+      board[farmer.getY()-1][farmer.getX()] = plantedSeed;
+      plantedSeed = new Seeds(farmer.getX()+1, farmer.getY());
+      board[farmer.getY()][farmer.getX()+1] = plantedSeed;
+    } else if (farmer.getX() == width-1) {
+      Plant plantedSeed;
+      plantedSeed = new Seeds(farmer.getX(), farmer.getY()+1);
+      board[farmer.getY()+1][farmer.getX()] = plantedSeed;
+      plantedSeed = new Seeds(farmer.getX(), farmer.getY()-1);
+      board[farmer.getY()-1][farmer.getX()] = plantedSeed;
+      plantedSeed = new Seeds(farmer.getX()-1, farmer.getY());
+      board[farmer.getY()][farmer.getX()-1] = plantedSeed;
+    } else if (farmer.getY() == 0) {
+      Plant plantedSeed;
+      plantedSeed = new Seeds(farmer.getX(), farmer.getY()+1);
+      board[farmer.getY()+1][farmer.getX()] = plantedSeed;
+      plantedSeed = new Seeds(farmer.getX()+1, farmer.getY());
+      board[farmer.getY()][farmer.getX()+1] = plantedSeed;
+      plantedSeed = new Seeds(farmer.getX()-1, farmer.getY());
+      board[farmer.getY()][farmer.getX()-1] = plantedSeed;
+    } else if (farmer.getY() == length-1) {
+      Plant plantedSeed;
+      plantedSeed = new Seeds(farmer.getX(), farmer.getY()-1);
+      board[farmer.getY()-1][farmer.getX()] = plantedSeed;
+      plantedSeed = new Seeds(farmer.getX()+1, farmer.getY());
+      board[farmer.getY()][farmer.getX()+1] = plantedSeed;
+      plantedSeed = new Seeds(farmer.getX()-1, farmer.getY());
+      board[farmer.getY()][farmer.getX()-1] = plantedSeed;
+    }
+    
+  }
+  
   public void moveAnimal(Animal organism, int direction) {
     //This method executes the actions associated with moving to a specific area
     boolean wolvesAround = checkWolvesAround(organism); //This boolean is necessary to avoid stackoverflow
@@ -345,7 +453,46 @@ class MapBoard {
     }
     
     if (canMove) {
-      if (board[spaceY][spaceX] == null) {
+      if(organism instanceof Villager) {
+        if (board[spaceY][spaceX] == null) {
+          board[organism.getY()][organism.getX()] = null;
+          changeOrganismCoordinates(organism, direction);
+          board[spaceY][spaceX] = organism;
+          decidePlant((Villager)organism);
+        } else if (board[spaceY][spaceX] instanceof Sheep) {
+          board[spaceY][spaceX].changeHealth(10);
+          decidePlant((Villager)organism);
+        } else if (board[spaceY][spaceX] instanceof Villager && !(board[spaceY][spaceX].getGender() == organism.getGender())) {
+          Animal baby;
+          int counter = 0;
+          while (board[spaceY][spaceX].getHealth() > 20 && organism.getHealth() > 20 && counter<11) {
+            counter++;
+            baby = new Villager(20);
+            randomizeGender(baby);
+            randomizeCoordinates(baby);
+            board[spaceY][spaceX].changeHealth(-10);
+            organism.changeHealth(-10);
+          }
+        } else {
+          //Villagers eat everything but sheep
+          board[organism.getY()][organism.getX()] = null;
+          changeOrganismCoordinates(organism, direction);
+          organism.changeHealth(board[organism.getY()][organism.getX()].getHealth());
+          board[spaceY][spaceX] = organism;
+          organism.setHasEaten(true);
+          decidePlant((Villager)organism);
+        }
+      } else if (board[spaceY][spaceX] instanceof Villager) {
+        if (organism instanceof Sheep) {
+          organism.changeHealth(10);
+        } else if (organism instanceof Wolf) {
+          board[organism.getY()][organism.getX()] = null;
+          changeOrganismCoordinates(organism, direction);
+          organism.changeHealth(board[organism.getY()][organism.getX()].getHealth());
+          organism.setHasEaten(true);
+          board[spaceY][spaceX] = organism;
+        }
+      } else if (board[spaceY][spaceX] == null) {
         board[organism.getY()][organism.getX()] = null;
         changeOrganismCoordinates(organism, direction);
         board[spaceY][spaceX] = organism;
@@ -355,6 +502,7 @@ class MapBoard {
         if (organism instanceof Sheep) {
           organism.changeHealth(board[organism.getY()][organism.getX()].getHealth());
           board[spaceY][spaceX] = organism;
+          organism.setHasEaten(true);
         } else {
           //Wolves aren't vegan
           board[spaceY][spaceX] = organism;
@@ -410,10 +558,13 @@ class MapBoard {
         board[organism.getY()][organism.getX()] = null;
         changeOrganismCoordinates(organism, direction);
         organism.changeHealth(board[organism.getY()][organism.getX()].getHealth());
+        organism.setHasEaten(true);
         board[spaceY][spaceX] = organism;
       } else if (board[spaceY][spaceX] instanceof Animal && organism instanceof Animal && (organism.getGender() != board[spaceY][spaceX].getGender())) {
         if (organism instanceof Sheep) {
-          while (board[spaceY][spaceX].getHealth() > 20 && organism.getHealth() > 20) {
+          int counter = 0;
+          while (board[spaceY][spaceX].getHealth() > 20 && organism.getHealth() > 20 && counter<11) {
+            counter++;
             Sheep e = new Sheep(20);
             randomizeGender(e);
             randomizeCoordinates(e);
@@ -458,5 +609,4 @@ class MapBoard {
     }
   }
 }
-  
-  
+
