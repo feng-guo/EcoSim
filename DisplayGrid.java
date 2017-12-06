@@ -14,9 +14,11 @@ class DisplayGrid {
   private JFrame frame;
   private int maxX,maxY, GridToScreenRatio;
   private Organism[][] world;
+  private String terrain;
   
   DisplayGrid(Organism[][] w) { 
     this.world = w;
+    this.terrain = "Field";
     
     maxX = Toolkit.getDefaultToolkit().getScreenSize().width;
     maxY = Toolkit.getDefaultToolkit().getScreenSize().height;
@@ -38,6 +40,9 @@ class DisplayGrid {
     this.world = w;
   }
   
+  public void setTerrain(String terrain) {
+    this.terrain = terrain;
+  }
   
   public void refresh() { 
     frame.repaint();
@@ -52,11 +57,27 @@ class DisplayGrid {
       setDoubleBuffered(true); 
       //g.setColor(Color.WHITE);
       Image grass = Toolkit.getDefaultToolkit().getImage("GrassTexture.png");
-      Image sheep = Toolkit.getDefaultToolkit().getImage("Sheep.png");
-      Image eatingSheep = Toolkit.getDefaultToolkit().getImage("EatingSheep.png");
-      Image wolf = Toolkit.getDefaultToolkit().getImage("Wolf.png");
-      Image eatingWolf = Toolkit.getDefaultToolkit().getImage("EatingWolf.png");
-      Image dirt = Toolkit.getDefaultToolkit().getImage("Dirt.jpg");
+      
+      Image sheep;
+      Image eatingSheep;
+      Image wolf;
+      Image eatingWolf;
+      Image dirt;
+      if (terrain.equals("field")) {
+        sheep = Toolkit.getDefaultToolkit().getImage("Sheep.png");
+        eatingSheep = Toolkit.getDefaultToolkit().getImage("EatingSheep.png");
+        wolf = Toolkit.getDefaultToolkit().getImage("Wolf.png");
+        eatingWolf = Toolkit.getDefaultToolkit().getImage("EatingWolf.png");
+        dirt = Toolkit.getDefaultToolkit().getImage("Dirt.jpg");
+      } else {
+        sheep = Toolkit.getDefaultToolkit().getImage("SnowSheep.png");
+        eatingSheep = Toolkit.getDefaultToolkit().getImage("SnowEatingSheep.jpg");
+        wolf = Toolkit.getDefaultToolkit().getImage("SnowWolf.png");
+        eatingWolf = Toolkit.getDefaultToolkit().getImage("SnowEatingWolf.jpg");
+        dirt = Toolkit.getDefaultToolkit().getImage("Snow.jpg");
+      }
+      
+      
       Image plant = Toolkit.getDefaultToolkit().getImage("Plant.jpg");
       Image villager = Toolkit.getDefaultToolkit().getImage("Villager.png");
       Image babyVillager = Toolkit.getDefaultToolkit().getImage("BabyVillager.png");

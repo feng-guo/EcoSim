@@ -29,6 +29,9 @@ class Ecosystem {
       intelligence = false;
     }
     MapBoard m = new MapBoard(length, width, plantNutrition, intelligence);
+    String terrain;
+    System.out.println("What type of terrain would you like (field or snow)?");
+    terrain = input.nextLine();
     System.out.println("How many sheep would you like to start out with?");
     initialSheep = input.nextInt();
     System.out.println("How many wolves would you like to start out with?");
@@ -66,6 +69,7 @@ class Ecosystem {
       m.spawnPlant();
     }
     DisplayGrid grid = new DisplayGrid(m.getBoard());
+    grid.setTerrain(terrain);
     turnCount = 0;
     sheepCount = 0;
     wolfCount = 0;

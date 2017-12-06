@@ -294,50 +294,32 @@ class MapBoard {
     }
   }
   
-  public boolean checkWolvesAround(Animal organism) {
-    boolean wolvesAround = false;
+  public boolean checkWolvesAround (Animal organism) {
+    boolean wolvesAround = true;
     try {
-      if (organism.getX() != 0 && organism.getX() != width-1 && organism.getY() != 0 && organism.getY() != length-1 && organism instanceof Wolf) {
-        if (board[organism.getY()-1][organism.getX()] instanceof Wolf && board[organism.getY()+1][organism.getX()] instanceof Wolf && board[organism.getY()][organism.getX()-1] instanceof Wolf && board[organism.getY()][organism.getX()+1] instanceof Wolf) {
-          wolvesAround = true;
-        }
-      } else if (organism.getX() == 0 && organism.getY() == 0) {
-        if (board[organism.getY()+1][organism.getX()] instanceof Wolf && board[organism.getY()][organism.getX()+1] instanceof Wolf) {
-          wolvesAround = true;
-        }
-      } else if (organism.getX() == width-1 && organism.getY() == 0) {
-        if (board[organism.getY()+1][organism.getX()] instanceof Wolf && board[organism.getY()][organism.getX()-1] instanceof Wolf) {
-          wolvesAround = true;
-        }
-      } else if (organism.getX() == 0 && organism.getY() == length-1) {
-        if (board[organism.getY()-1][organism.getX()] instanceof Wolf && board[organism.getY()][organism.getX()+1] instanceof Wolf) {
-          wolvesAround = true;
-        }
-      } else if (organism.getX() == width-1 && organism.getY() == length-1) {
-        if (board[organism.getY()-1][organism.getX()] instanceof Wolf && board[organism.getY()][organism.getX()-1] instanceof Wolf) {
-          wolvesAround = true;
-        }
-      } else if (organism.getX() == 0) {
-        if (board[organism.getY()+1][organism.getX()] instanceof Wolf && board[organism.getY()-1][organism.getX()] instanceof Wolf && board[organism.getY()][organism.getX()+1] instanceof Wolf) {
-          wolvesAround = true;
-        }
-      } else if (organism.getX() == width-1) {
-        if (board[organism.getY()+1][organism.getX()] instanceof Wolf && board[organism.getY()-1][organism.getX()] instanceof Wolf && board[organism.getY()][organism.getX()-1] instanceof Wolf) {
-          wolvesAround = true;
-        }
-      } else if (organism.getY() == 0) {
-        if (board[organism.getY()+1][organism.getX()] instanceof Wolf && board[organism.getY()][organism.getX()-1] instanceof Wolf && board[organism.getY()][organism.getX()+1] instanceof Wolf) {
-          wolvesAround = true;
-        }
-      } else if (organism.getY() == length-1) {
-        if (board[organism.getY()-1][organism.getX()] instanceof Wolf && board[organism.getY()][organism.getX()-1] instanceof Wolf && board[organism.getY()][organism.getX()+1] instanceof Wolf) {
-          wolvesAround = true;
+      if (organism.getX() > 0) {
+        if (!(board[organism.getY()][organism.getX()-1] instanceof Wolf)) {
+          return false;
         }
       }
-    } catch (NullPointerException e) {
-      //If the exception is caught, then that means the space is free and therefore wolvesAround would remain false
-    } finally {
+      if (organism.getX() < width-1) {
+        if (!(board[organism.getY()][organism.getX()+1] instanceof Wolf)) {
+          return false;
+        }
+      }
+      if (organism.getY() > 0) {
+        if (!(board[organism.getY()-1][organism.getX()] instanceof Wolf)) {
+          return false;
+        }
+      }
+      if (organism.getY () < length-1) {
+        if (!(board[organism.getY()+1][organism.getX()] instanceof Wolf)) {
+          return false;
+        }
+      }
       return wolvesAround;
+    } catch (NullPointerException e) {
+      return false;
     }
   }
   
@@ -349,76 +331,211 @@ class MapBoard {
     }
   }
   
-  public void villagerRampage(Villager farmer) {
-    //farmers can plant all around them if they decide to
-    if (farmer.getX() != 0 && farmer.getX() != width-1 && farmer.getY() != 0 && farmer.getY() != length-1) {
-      Plant plantedSeed;
-      plantedSeed = new Seeds(farmer.getX(), farmer.getY()-1);
-      board[farmer.getY()-1][farmer.getX()] = plantedSeed;
-      plantedSeed = new Seeds(farmer.getX(), farmer.getY()+1);
-      board[farmer.getY()+1][farmer.getX()] = plantedSeed;
-      plantedSeed = new Seeds(farmer.getX()-1, farmer.getY());
-      board[farmer.getY()][farmer.getX()-1] = plantedSeed;
-      plantedSeed = new Seeds(farmer.getX()+1, farmer.getY());
-      board[farmer.getY()][farmer.getX()+1] = plantedSeed;
-    } else if (farmer.getX() == 0 && farmer.getY() == 0) {
-      Plant plantedSeed;
-      plantedSeed = new Seeds(farmer.getX(), farmer.getY()+1);
-      board[farmer.getY()+1][farmer.getX()] = plantedSeed;
-      plantedSeed = new Seeds(farmer.getX()+1, farmer.getY());
-      board[farmer.getY()][farmer.getX()+1] = plantedSeed;
-    } else if (farmer.getX() == width-1 && farmer.getY() == 0) {
-      Plant plantedSeed;
-      plantedSeed = new Seeds(farmer.getX(), farmer.getY()+1);
-      board[farmer.getY()+1][farmer.getX()] = plantedSeed;
-      plantedSeed = new Seeds(farmer.getX()-1, farmer.getY());
-      board[farmer.getY()][farmer.getX()-1] = plantedSeed;
-    } else if (farmer.getX() == 0 && farmer.getY() == length-1) {
-      Plant plantedSeed;
-      plantedSeed = new Seeds(farmer.getX(), farmer.getY()-1);
-      board[farmer.getY()-1][farmer.getX()] = plantedSeed;
-      plantedSeed = new Seeds(farmer.getX()+1, farmer.getY());
-      board[farmer.getY()][farmer.getX()+1] = plantedSeed;
-    } else if (farmer.getX() == width-1 && farmer.getY() == length-1) {
-      Plant plantedSeed;
-      plantedSeed = new Seeds(farmer.getX(), farmer.getY()-1);
-      board[farmer.getY()-1][farmer.getX()] = plantedSeed;
-      plantedSeed = new Seeds(farmer.getX()-1, farmer.getY());
-      board[farmer.getY()][farmer.getX()-1] = plantedSeed;
-    } else if (farmer.getX() == 0) {
-      Plant plantedSeed;
-      plantedSeed = new Seeds(farmer.getX(), farmer.getY()+1);
-      board[farmer.getY()+1][farmer.getX()] = plantedSeed;
-      plantedSeed = new Seeds(farmer.getX(), farmer.getY()-1);
-      board[farmer.getY()-1][farmer.getX()] = plantedSeed;
-      plantedSeed = new Seeds(farmer.getX()+1, farmer.getY());
-      board[farmer.getY()][farmer.getX()+1] = plantedSeed;
-    } else if (farmer.getX() == width-1) {
-      Plant plantedSeed;
-      plantedSeed = new Seeds(farmer.getX(), farmer.getY()+1);
-      board[farmer.getY()+1][farmer.getX()] = plantedSeed;
-      plantedSeed = new Seeds(farmer.getX(), farmer.getY()-1);
-      board[farmer.getY()-1][farmer.getX()] = plantedSeed;
-      plantedSeed = new Seeds(farmer.getX()-1, farmer.getY());
-      board[farmer.getY()][farmer.getX()-1] = plantedSeed;
-    } else if (farmer.getY() == 0) {
-      Plant plantedSeed;
-      plantedSeed = new Seeds(farmer.getX(), farmer.getY()+1);
-      board[farmer.getY()+1][farmer.getX()] = plantedSeed;
-      plantedSeed = new Seeds(farmer.getX()+1, farmer.getY());
-      board[farmer.getY()][farmer.getX()+1] = plantedSeed;
-      plantedSeed = new Seeds(farmer.getX()-1, farmer.getY());
-      board[farmer.getY()][farmer.getX()-1] = plantedSeed;
-    } else if (farmer.getY() == length-1) {
-      Plant plantedSeed;
-      plantedSeed = new Seeds(farmer.getX(), farmer.getY()-1);
-      board[farmer.getY()-1][farmer.getX()] = plantedSeed;
-      plantedSeed = new Seeds(farmer.getX()+1, farmer.getY());
-      board[farmer.getY()][farmer.getX()+1] = plantedSeed;
-      plantedSeed = new Seeds(farmer.getX()-1, farmer.getY());
-      board[farmer.getY()][farmer.getX()-1] = plantedSeed;
+  public void villagerRampage (Villager farmer) {
+    Plant plantedSeed;
+    if (farmer.getX() > 0) {
+      if (board[farmer.getY()][farmer.getX()-1] == null) {
+        plantedSeed = new Seeds(farmer.getX()-1, farmer.getY());
+        board[farmer.getY()][farmer.getX()-1] = plantedSeed;
+      } else if (!(board[farmer.getY()][farmer.getX()-1] instanceof Villager)) {
+        plantedSeed = new Seeds(farmer.getX()-1, farmer.getY());
+        board[farmer.getY()][farmer.getX()-1] = plantedSeed;
+      }
     }
-    
+    if (farmer.getX() < width-1) {
+      if (board[farmer.getY()][farmer.getX()+1] == null) {
+        plantedSeed = new Seeds(farmer.getX()+1, farmer.getY());
+        board[farmer.getY()][farmer.getX()+1] = plantedSeed;
+      } else if (!(board[farmer.getY()][farmer.getX()+1] instanceof Villager)) {
+        plantedSeed = new Seeds(farmer.getX()+1, farmer.getY());
+        board[farmer.getY()][farmer.getX()+1] = plantedSeed;
+      }
+    }
+    if (farmer.getY() > 0) {
+      if (board[farmer.getY()-1][farmer.getX()] == null) {
+        plantedSeed = new Seeds(farmer.getX(), farmer.getY()-1);
+        board[farmer.getY()-1][farmer.getX()] = plantedSeed;
+      } else if (!(board[farmer.getY()-1][farmer.getX()] instanceof Villager)) {
+        plantedSeed = new Seeds(farmer.getX(), farmer.getY()-1);
+        board[farmer.getY()-1][farmer.getX()] = plantedSeed;
+      }
+    } 
+    if (farmer.getY() < length-1) {
+      if (board[farmer.getY()+1][farmer.getX()] == null) {
+        plantedSeed = new Seeds(farmer.getX(), farmer.getY()+1);
+        board[farmer.getY()+1][farmer.getX()] = plantedSeed;
+      } else if (!(board[farmer.getY()+1][farmer.getX()] instanceof Villager)) {
+        plantedSeed = new Seeds(farmer.getX(), farmer.getY()+1);
+        board[farmer.getY()+1][farmer.getX()] = plantedSeed;
+      }
+    } 
+  }
+  
+  public boolean spawnChildren (Animal parent, int spaceX, int spaceY) {
+    int parentX = parent.getX();
+    int parentY = parent.getY();
+    Animal child;
+    int childX=0, childY=0;
+    try {
+      if (parentX > 0) {
+        childX = parentX-1;
+        childY = parentY;
+        if (!(board[childY][childX] instanceof Animal)) {
+          if (parent instanceof Sheep) {
+            child = new Sheep(20);
+          } else if (parent instanceof Wolf) {
+            child = new Wolf(20);
+          } else {
+            child = new Villager(20);
+          }
+          child.setX(childX);
+          child.setY(childY);
+          randomizeGender(child);
+          board[childY][childX] = child;
+          return true;
+        }
+      }
+      if (parentX < width-1) {
+        childX = parentX+1;
+        childY = parentY;
+        if (!(board[childY][childX] instanceof Animal)) {
+          if (parent instanceof Sheep) {
+            child = new Sheep(20);
+          } else if (parent instanceof Wolf) {
+            child = new Wolf(20);
+          } else {
+            child = new Villager(20);
+          }
+          child.setX(childX);
+          child.setY(childY);
+          randomizeGender(child);
+          board[childY][childX] = child;
+          return true;
+        }
+      }
+      if (parentY > 0) {
+        childX = parentX;
+        childY = parentY-1;
+        if (!(board[childY][childX] instanceof Animal)) {
+          if (parent instanceof Sheep) {
+            child = new Sheep(20);
+          } else if (parent instanceof Wolf) {
+            child = new Wolf(20);
+          } else {
+            child = new Villager(20);
+          }
+          child.setX(childX);
+          child.setY(childY);
+          randomizeGender(child);
+          board[childY][childX] = child;
+          return true;
+        }
+      }
+      if (parentY < length-1) {
+        childX = parentX;
+        childY = parentY+1;
+        if (!(board[childY][childX] instanceof Animal)) {
+          if (parent instanceof Sheep) {
+            child = new Sheep(20);
+          } else if (parent instanceof Wolf) {
+            child = new Wolf(20);
+          } else {
+            child = new Villager(20);
+          }
+          child.setX(childX);
+          child.setY(childY);
+          randomizeGender(child);
+          board[childY][childX] = child;
+          return true;
+        }
+      } 
+      if (spaceX > 0) {
+        childX = spaceX-1;
+        childY = spaceY;
+        if (!(board[childY][childX] instanceof Animal)) {
+          if (parent instanceof Sheep) {
+            child = new Sheep(20);
+          } else if (parent instanceof Wolf) {
+            child = new Wolf(20);
+          } else {
+            child = new Villager(20);
+          }
+          child.setX(childX);
+          child.setY(childY);
+          randomizeGender(child);
+          board[childY][childX] = child;
+          return true;
+        }
+      }
+      if (spaceX < width-1) {
+        childX = spaceX+1;
+        childY = spaceY;
+        if (!(board[childY][childX] instanceof Animal)) {
+          if (parent instanceof Sheep) {
+            child = new Sheep(20);
+          } else if (parent instanceof Wolf) {
+            child = new Wolf(20);
+          } else {
+            child = new Villager(20);
+          }
+          child.setX(childX);
+          child.setY(childY);
+          randomizeGender(child);
+          board[childY][childX] = child;
+          return true;
+        }
+      }
+      if (spaceY > 0) {
+        childX = spaceX;
+        childY = spaceY-1;
+        if (!(board[childY][childX] instanceof Animal)) {
+          if (parent instanceof Sheep) {
+            child = new Sheep(20);
+          } else if (parent instanceof Wolf) {
+            child = new Wolf(20);
+          } else {
+            child = new Villager(20);
+          }
+          child.setX(childX);
+          child.setY(childY);
+          randomizeGender(child);
+          board[childY][childX] = child;
+          return true;
+        }
+      }
+      if (spaceY < length-1) {
+        childX = spaceX;
+        childY = spaceY+1;
+        if (!(board[childY][childX] instanceof Animal)) {
+          if (parent instanceof Sheep) {
+            child = new Sheep(20);
+          } else if (parent instanceof Wolf) {
+            child = new Wolf(20);
+          } else {
+            child = new Villager(20);
+          }
+          child.setX(childX);
+          child.setY(childY);
+          randomizeGender(child);
+          board[childY][childX] = child;
+          return true;
+        }
+      }
+      return false;
+    } catch (NullPointerException e) {
+      if (parent instanceof Sheep) {
+        child = new Sheep(20);
+      } else if (parent instanceof Wolf) {
+        child = new Wolf(20);
+      } else {
+        child = new Villager(20);
+      }
+      child.setX(childX);
+      child.setY(childY);
+      randomizeGender(child);
+      board[childY][childX] = child;
+      return true;
+    }
   }
   
   public void moveAnimal(Animal organism, int direction) {
@@ -464,15 +581,12 @@ class MapBoard {
           decidePlant((Villager)organism);
         } else if (board[spaceY][spaceX] instanceof Villager && !(board[spaceY][spaceX].getGender() == organism.getGender())) {
           Animal baby;
-          int counter = 0;
-          while (board[spaceY][spaceX].getHealth() > 20 && organism.getHealth() > 20 && counter<11) {
-            counter++;
-            baby = new Villager(20);
-            randomizeGender(baby);
-            randomizeCoordinates(baby);
+          boolean spawned;
+          do {
+            spawned = spawnChildren((Animal)organism, spaceX, spaceY);
             board[spaceY][spaceX].changeHealth(-10);
             organism.changeHealth(-10);
-          }
+          } while (board[spaceY][spaceX].getHealth() > 20 && organism.getHealth() > 20 && spawned);
         } else {
           //Villagers eat everything but sheep
           board[organism.getY()][organism.getX()] = null;
@@ -562,25 +676,19 @@ class MapBoard {
         board[spaceY][spaceX] = organism;
       } else if (board[spaceY][spaceX] instanceof Animal && organism instanceof Animal && (organism.getGender() != board[spaceY][spaceX].getGender())) {
         if (organism instanceof Sheep) {
-          int counter = 0; //max 5 sheep babies or else the board becomes too wild
-          while (board[spaceY][spaceX].getHealth() > 20 && organism.getHealth() > 20 && counter<3) {
-            counter++;
-            Sheep e = new Sheep(20);
-            randomizeGender(e);
-            randomizeCoordinates(e);
+          boolean spawned; //max 6 sheep babies or else the board becomes too wild
+           do {
+            spawned = spawnChildren((Animal)organism, spaceX, spaceY);
             board[spaceY][spaceX].changeHealth(-10);
             organism.changeHealth(-10);
-          }
+          } while (board[spaceY][spaceX].getHealth() > 20 && organism.getHealth() > 20 && spawned);
         } else if (organism instanceof Wolf) {
-          int counter = 0; //max 10 wolf babies or else the simulation ends too quickly
-          while (board[spaceY][spaceX].getHealth() > 20 && organism.getHealth() > 20 && counter > 11) {
-            counter++;
-            Wolf baby = new Wolf(20);
-            randomizeGender(baby);
-            randomizeCoordinates(baby);
+          boolean spawned; //max 6 wolf babies or else the simulation ends too quickly
+          do {
+            spawned = spawnChildren((Animal)organism, spaceX, spaceY);
             board[spaceY][spaceX].changeHealth(-10);
             organism.changeHealth(-10);
-          } 
+          } while (board[spaceY][spaceX].getHealth() > 20 && organism.getHealth() > 20 && spawned);
         }
       } else if (board[spaceY][spaceX] instanceof Wolf && organism instanceof Wolf) {
         if (board[spaceY][spaceX].getHealth() > organism.getHealth()) {
