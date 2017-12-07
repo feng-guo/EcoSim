@@ -5,7 +5,6 @@
  * 11/23/2017
  */ 
 
-
 abstract class Organism implements Moveable{
   private int health;
   private int initialHealth; //This is used for plants
@@ -67,177 +66,18 @@ abstract class Organism implements Moveable{
     y++;
   }
   
-  abstract boolean getGender();
-  abstract boolean getMoved();
-  abstract boolean getHasEaten();
-  abstract void setGender(boolean gender);
-  abstract void setMoved(boolean moved);
-  abstract void setHasEaten(boolean hasEaten);
-}
-
-abstract class Plant extends Organism {
-  Plant(int health) {
-    super(health);
-  }
-  
-  Plant(int x, int y, int health) {
-    super(x, y, health);
-  }
-  
+  //These following methods were supposed to be abstract but I had classes that shouldn't belong in some subclasses
+  //Instead dynamic dispatch will cover the method calling
   public boolean getGender() {
-    //This should never be called for a plant
     return true;
   }
-  
   public boolean getMoved() {
-    //This should never be called for a plant
     return true;
   }
-   public boolean getHasEaten() {
-    //This should never be called for a plant
+  public boolean getHasEaten() {
     return true;
   }
   public void setGender(boolean gender){};
   public void setMoved(boolean moved){};
   public void setHasEaten(boolean hasEaten){};
 }
-
-class SugarCane extends Plant {
-  SugarCane() {
-    super(100);
-  }
-  SugarCane(int x, int y) {
-    super(x, y, 100);
-  }
-}
-class Corn extends Plant {  
-  Corn() {
-    super(75);
-  }
-  Corn(int x, int y) {
-    super(x, y, 75);
-  }
-}
-class Wheat extends Plant {
-  Wheat() {
-    super(50);
-  }
-  Wheat(int x, int y) {
-    super(x, y, 50);
-  }
-}
-class Potato extends Plant {
-  Potato() {
-    super(40);
-  }
-  Potato(int x, int y) {
-    super(x, y, 40);
-  }
-}
-class Carrot extends Plant {
-  Carrot() {
-    super(30);
-  }
-  Carrot(int x, int y) {
-    super(x, y, 30);
-  }
-}
-class Apple extends Plant {
-  Apple() {
-    super(20);
-  }
-  Apple(int x, int y) {
-    super(x, y, 20);
-  }
-}
-class Seeds extends Plant {
-  Seeds() {
-    super(15);
-  }
-  Seeds(int x, int y) {
-    super(x, y, 15);
-  }
-}
-class Grass extends Plant {
-  Grass() {
-    super(10);
-  }
-  Grass(int x, int y) {
-    super(x, y, 10);
-  }
-}
-class Weed extends Plant {
-  Weed() {
-    super(5);
-  }
-  Weed(int x, int y) {
-    super(x, y, 5);
-  }
-}
-
-abstract class Animal extends Organism {
-  private boolean gender;
-  private boolean moved;
-  private boolean hasEaten;
-  
-  Animal(int health) {
-    super(health);
-    moved = true;
-    hasEaten = false;
-  }
-  
-  Animal(int x, int y, int health, boolean gender) {
-    super(x, y, health);
-    this.gender = gender;
-    moved = true;
-    hasEaten = false;
-  }
-  
-  public void setGender(boolean gender) {
-    this.gender = gender;
-  }
-  public void setMoved(boolean moved) {
-    this.moved = moved;
-  }
-  public void setHasEaten(boolean hasEaten) {
-    this.hasEaten = hasEaten;
-  }
-  
-  public boolean getGender() {
-    return gender;
-  }
-  public boolean getMoved() {
-    return moved;
-  }
-  public boolean getHasEaten() {
-    return hasEaten;
-  }
-}
-
-class Sheep extends Animal {
-  Sheep(int health) {
-    super(health);
-  }
-  Sheep(int x, int y, int health, boolean gender) {
-    super(x, y, health, gender);
-  }
-}
-
-class Wolf extends Animal {
-  Wolf(int health) {
-    super(health);
-  }
-  Wolf(int x, int y, int health, boolean gender) {
-    super(x, y, health, gender);
-  }
-}
-
-class Villager extends Animal {
-  Villager(int health) {
-    super(health);
-  }
-  Villager (int x, int y, int health, boolean gender) {
-    super(x, y, health, gender);
-  }
-}
-  

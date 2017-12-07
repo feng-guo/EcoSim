@@ -62,7 +62,9 @@ class DisplayGrid {
       Image eatingSheep;
       Image wolf;
       Image eatingWolf;
+      Image rabbit = Toolkit.getDefaultToolkit().getImage("Placeholder.png");
       Image dirt;
+      
       if (terrain.equals("field")) {
         sheep = Toolkit.getDefaultToolkit().getImage("Sheep.png");
         eatingSheep = Toolkit.getDefaultToolkit().getImage("EatingSheep.png");
@@ -134,6 +136,8 @@ class DisplayGrid {
             } else {
               g.drawImage(villager,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             }
+          } else if (world[i][j] instanceof Rabbit) {
+            g.drawImage(rabbit,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
           }
           //g.fillRect(j*GridToScreenRatio, i*GridToScreenRatio, GridToScreenRatio, GridToScreenRatio);
           //g.setColor(Color.BLACK);
