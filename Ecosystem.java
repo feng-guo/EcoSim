@@ -30,7 +30,8 @@ class Ecosystem {
     if (option == 0) {
       option = JOptionPane.showOptionDialog(null, "What ecosystem would you like?", "Select an option", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
       if (option == 0) {
-        plantNutrition = 2;
+        JOptionPane.showMessageDialog(null, "The plains has very high plant growth and nutrition. Fit for any organism.");
+        plantNutrition = 2; //Setting this to 3 is insanity
         plantSpawnRate = 3;
         initialSheep = (length*width*1)/10;
         initialRabbits = initialSheep;
@@ -40,6 +41,7 @@ class Ecosystem {
         terrain = "field";
         map = new MapBoard(length, width, plantNutrition, true);
       } else if (option == 1) {
+        JOptionPane.showMessageDialog(null, "The tundra is very cold and very few plants grow. Survival is a struggle.");
         plantNutrition = 1; //Plants grow less and are less nutritious
         plantSpawnRate = 1;
         initialSheep = (length*width*1)/10; //Sheep don't live in the arctic
@@ -50,8 +52,9 @@ class Ecosystem {
         terrain = "snow";
         map = new MapBoard(length, width, plantNutrition, true);
       } else if (option == 2) {
+        JOptionPane.showMessageDialog(null, "The scorching desert has few, but nutritious plants for all organisms.");
         plantNutrition = 2; //Plants grow better in the desert than the arctic
-        plantSpawnRate = 2;
+        plantSpawnRate = 1;
         initialSheep = (length*width)/5; //Sheep don't really live in the desert
         initialRabbits = initialSheep*3 / 2; 
         initialWolves = initialSheep/20; //Less wolves
@@ -60,6 +63,7 @@ class Ecosystem {
         terrain = "desert";
         map = new MapBoard(length, width, plantNutrition, true);
       } else {
+        JOptionPane.showMessageDialog(null, "Modern India. A lot of people and animals.");
         plantNutrition = 2; //Plants can live in the city but hard to reproduce
         plantSpawnRate = 1;
         initialSheep = length*width/20; //Sheep don't really live in the city
@@ -262,7 +266,7 @@ class Ecosystem {
         }
       }
       if (animalCount == 0 && !noMoreAnimals) {
-        option = JOptionPane.showConfirmDialog(null, "There is nothing but plants left", "Confirm", JOptionPane.YES_NO_OPTION);
+        option = JOptionPane.showConfirmDialog(null, "There is nothing but plants left. Would you like to end the program?", "Confirm", JOptionPane.YES_NO_OPTION);
         if (option == 0) {
           endLoop = true;
         } else {
