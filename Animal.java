@@ -35,4 +35,13 @@ abstract class Animal extends Organism {
   public boolean getHasEaten() {
     return hasEaten;
   }
+  public int compareTo(Animal organismTwo) {
+    if (getHealth() > organismTwo.getHealth()) {
+      return 1;
+    } else if (getHealth() < organismTwo.getHealth()) {
+      return -1;
+    } else {
+      return 0;
+    }
+  }
 }

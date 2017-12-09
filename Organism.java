@@ -65,6 +65,15 @@ abstract class Organism implements Moveable{
   public void moveDown() {
     y++;
   }
+  public int compareTo(Organism organismTwo) {
+    if (health > organismTwo.getHealth()) {
+      return 1;
+    } else if (health < organismTwo.getHealth()) {
+      return -1;
+    } else {
+      return 0;
+    }
+  }
   
   //These following methods were supposed to be abstract but I had classes that shouldn't belong in some subclasses
   //Instead dynamic dispatch will cover the method calling

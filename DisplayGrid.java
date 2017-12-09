@@ -4,9 +4,13 @@
  */
 
 // Graphics Imports
-import javax.swing.*;
-import java.awt.*;
-import java.io.*;
+//import javax.swing.*;
+import javax.swing.JFrame;
+import java.awt.Graphics;
+import java.awt.Toolkit;
+import javax.swing.JPanel;
+import java.awt.Image;
+import java.awt.BorderLayout;
 
 
 class DisplayGrid { 
@@ -56,49 +60,68 @@ class DisplayGrid {
       
       setDoubleBuffered(true); 
       //g.setColor(Color.WHITE);
-      Image grass = Toolkit.getDefaultToolkit().getImage("GrassTexture.png");
       
-      Image sheep;
-      Image eatingSheep;
-      Image wolf;
-      Image eatingWolf;
-      Image rabbit = Toolkit.getDefaultToolkit().getImage("Placeholder.png");
-      Image dirt;
+      //Ground textures
+      Image grass = Toolkit.getDefaultToolkit().getImage("images/Grass.png");
+      Image dirt = Toolkit.getDefaultToolkit().getImage("images/Dirt.jpg");
       
-      if (terrain.equals("field")) {
-        sheep = Toolkit.getDefaultToolkit().getImage("Sheep.png");
-        eatingSheep = Toolkit.getDefaultToolkit().getImage("EatingSheep.png");
-        wolf = Toolkit.getDefaultToolkit().getImage("Wolf.png");
-        eatingWolf = Toolkit.getDefaultToolkit().getImage("EatingWolf.png");
-        dirt = Toolkit.getDefaultToolkit().getImage("Dirt.jpg");
-      } else {
-        sheep = Toolkit.getDefaultToolkit().getImage("SnowSheep.png");
-        eatingSheep = Toolkit.getDefaultToolkit().getImage("SnowEatingSheep.jpg");
-        wolf = Toolkit.getDefaultToolkit().getImage("SnowWolf.png");
-        eatingWolf = Toolkit.getDefaultToolkit().getImage("SnowEatingWolf.jpg");
-        dirt = Toolkit.getDefaultToolkit().getImage("Snow.jpg");
+      //Cool animal sprites
+      Image sheep = Toolkit.getDefaultToolkit().getImage("images/Sheep.png");
+      Image babySheep = Toolkit.getDefaultToolkit().getImage("images/BabySheep.png");
+      Image eatingSheep = Toolkit.getDefaultToolkit().getImage("images/EatingSheep.png");
+      Image wolf = Toolkit.getDefaultToolkit().getImage("images/Wolf.png");
+      Image babyWolf = Toolkit.getDefaultToolkit().getImage("images/BabyWolf.png");
+      Image eatingWolf = Toolkit.getDefaultToolkit().getImage("images/EatingWolf.png");
+      
+      //Dynamic animal sprites (Changes based on terrain)
+      Image rabbit = Toolkit.getDefaultToolkit().getImage("images/Rabbit.png");
+      Image villager = Toolkit.getDefaultToolkit().getImage("images/Villager.png");
+      Image babyVillager = Toolkit.getDefaultToolkit().getImage("images/BabyVillager.png");
+      
+      //Lame animal sprites
+      Image cow = Toolkit.getDefaultToolkit().getImage("images/Cow.png");
+      Image pig = Toolkit.getDefaultToolkit().getImage("images/Pig.png");
+      
+      //Dynamic animal sprites
+      if (terrain.equals("desert")) {
+        dirt = Toolkit.getDefaultToolkit().getImage("images/Sand.jpg");
+        grass = Toolkit.getDefaultToolkit().getImage("images/DesertGrass.png");
+        rabbit = Toolkit.getDefaultToolkit().getImage("images/DesertRabbit.png");
+        villager = Toolkit.getDefaultToolkit().getImage("images/DesertVillager.png");
+        babyVillager = Toolkit.getDefaultToolkit().getImage("images/DesertBabyVillager.png");
+      } else if (terrain.equals("snow")) {
+        dirt = Toolkit.getDefaultToolkit().getImage("images/Snow.jpg");
+        grass = Toolkit.getDefaultToolkit().getImage("images/SnowGrass.png");
+        rabbit = Toolkit.getDefaultToolkit().getImage("images/SnowRabbit.png");
+        villager = Toolkit.getDefaultToolkit().getImage("images/SnowVillager.png");
+        babyVillager = Toolkit.getDefaultToolkit().getImage("images/SnowBabyVillager.png");
+      } else if (terrain.equals("city")) {
+        dirt = Toolkit.getDefaultToolkit().getImage("images/Stone.png");
+        grass = Toolkit.getDefaultToolkit().getImage("images/CityGrass.png");
+        rabbit = Toolkit.getDefaultToolkit().getImage("images/CityRabbit.png");
+        villager = Toolkit.getDefaultToolkit().getImage("images/CityVillager.png");
+        babyVillager = Toolkit.getDefaultToolkit().getImage("images/CityVillager.png");
       }
       
-      
-      Image plant = Toolkit.getDefaultToolkit().getImage("Plant.jpg");
-      Image villager = Toolkit.getDefaultToolkit().getImage("Villager.png");
-      Image babyVillager = Toolkit.getDefaultToolkit().getImage("BabyVillager.png");
-      Image sugarCane = Toolkit.getDefaultToolkit().getImage("SugarCane.png");;
-      Image corn = Toolkit.getDefaultToolkit().getImage("Corn.png");
-      Image wheat = Toolkit.getDefaultToolkit().getImage("Wheat.png");
-      Image potato = Toolkit.getDefaultToolkit().getImage("Potato.png");
-      Image carrot = Toolkit.getDefaultToolkit().getImage("Carrot.png");
-      Image apple = Toolkit.getDefaultToolkit().getImage("Apple.png");
-      Image seeds = Toolkit.getDefaultToolkit().getImage("Seeds.png");
-      Image weed = Toolkit.getDefaultToolkit().getImage("Weed.png");
+      //Boring plant pictures
+      Image sugarCane = Toolkit.getDefaultToolkit().getImage("images/SugarCane.png");;
+      Image corn = Toolkit.getDefaultToolkit().getImage("images/Corn.png");
+      Image wheat = Toolkit.getDefaultToolkit().getImage("images/Wheat.png");
+      Image potato = Toolkit.getDefaultToolkit().getImage("images/Potato.png");
+      Image carrot = Toolkit.getDefaultToolkit().getImage("images/Carrot.png");
+      Image apple = Toolkit.getDefaultToolkit().getImage("images/Apple.png");
+      Image seeds = Toolkit.getDefaultToolkit().getImage("images/Seeds.png");
+      Image weed = Toolkit.getDefaultToolkit().getImage("images/Weed.png");
+      Image creeper = Toolkit.getDefaultToolkit().getImage("images/Creeper.png");
       
       
       
-      for(int i = 0; i<world[0].length;i=i+1) { 
-        for(int j = 0; j<world.length;j=j+1) { 
+      for(int i = 0; i<world[0].length; i++) { 
+        for(int j = 0; j<world.length; j++) { 
           if (world[i][j] == null) {
             g.drawImage(dirt,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
           } else if (world[i][j] instanceof Plant) {
+            g.drawImage(grass,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             if (world[i][j] instanceof SugarCane) {
               g.drawImage(sugarCane,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             } else if (world[i][j] instanceof Corn) {
@@ -115,29 +138,47 @@ class DisplayGrid {
               g.drawImage(seeds,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             } else if (world[i][j] instanceof Weed) {
               g.drawImage(weed,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
-            } else {
-              g.drawImage(grass,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            } else if (world[i][j] instanceof Creeper) {
+              g.drawImage(creeper,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             }
           } else if (world[i][j] instanceof Wolf) {
+            g.drawImage(dirt,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             if (world[i][j].getHasEaten()) {
               g.drawImage(eatingWolf,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             } else {
-              g.drawImage(wolf,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+              if (world[i][j].getAge() < 10) {
+                g.drawImage(babyWolf,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+              } else {
+                g.drawImage(wolf,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+              }
             }
           } else if (world[i][j] instanceof Sheep) {
+            g.drawImage(dirt,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             if (world[i][j].getHasEaten()) {
               g.drawImage(eatingSheep,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             } else {
-              g.drawImage(sheep,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+              if (world[i][j].getAge() < 10) {
+                g.drawImage(babySheep,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+              } else {
+                g.drawImage(sheep,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+              }
             }
           } else if (world[i][j] instanceof Villager) {
-            if (world[i][j].getAge() < 20) {
+            g.drawImage(dirt,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            if (world[i][j].getAge() < 10) {
               g.drawImage(babyVillager,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             } else {
               g.drawImage(villager,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             }
           } else if (world[i][j] instanceof Rabbit) {
+            g.drawImage(dirt,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             g.drawImage(rabbit,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+          } else if (world[i][j] instanceof Pig) {
+            g.drawImage(dirt,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            g.drawImage(pig,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+          } else if (world[i][j] instanceof Cow) {
+            g.drawImage(dirt,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            g.drawImage(cow,j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
           }
           //g.fillRect(j*GridToScreenRatio, i*GridToScreenRatio, GridToScreenRatio, GridToScreenRatio);
           //g.setColor(Color.BLACK);
