@@ -7,9 +7,9 @@ class MapBoard {
   private Organism[][] board;
   private int length;
   private int width;
-  private int plantNutrition;
-  private boolean intelligence;
-  private boolean oldAge;
+  private int plantNutrition; //"a" value of the parabola for plant growth
+  private boolean intelligence; //Decides if the animals should be smart
+  private boolean oldAge; //Decides if the animals should die of old age
   
   MapBoard() {
     //Default constructor. Never called by the Ecosystem class
@@ -380,7 +380,6 @@ class MapBoard {
     //Makes everything in a small radius disappear
     int creeperX = creeper.getX();
     int creeperY = creeper.getY();
-    board[creeper.getY()][creeper.getX()] = null;
     if (creeperX != 0) {
       board[creeperX-1][creeperY] = null;
     }
@@ -405,6 +404,7 @@ class MapBoard {
     if (creeperX != width-1 && creeperY != length-1) {
       board[creeperX+1][creeperY+1] = null;
     }
+    board[creeper.getY()][creeper.getX()] = null;
   }
   
   public void decidePlant(Villager farmer) {
@@ -708,7 +708,7 @@ class MapBoard {
     //This method executes the actions associated with moving to a specific area
     boolean wolvesAround = checkWolvesAround(organism); //This boolean is necessary to avoid stackoverflow
     
-    boolean canMove = false; //Allows the organism to move in the direction desired. Can be changed
+    boolean canMove = false; //Allows the organism to move in the direction desired. Can be changed. canMove prevents array index out of bounds
     int spaceX, spaceY; //The coordinates of the spot of which an organism wants to move in
     
     //For reference of direction
@@ -865,6 +865,7 @@ class MapBoard {
         board[spaceY][spaceX].changeHealth((organism.getHealth()*3)/5);
         board[spaceY][spaceX].setHasEaten(true);
       } else if (board[spaceY][spaceX] instanceof Animal && organism instanceof Animal && (organism.getGender() != board[spaceY][spaceX].getGender())) {
+        //Determines the interaction 
         if (organism instanceof Sheep && board[spaceY][spaceX] instanceof Sheep) {
           boolean spawned; //max 6 sheep babies or else the board becomes too wild
           do {
@@ -908,20 +909,25 @@ class MapBoard {
           } while (board[spaceY][spaceX].getHealth() > 20 && organism.getHealth() > 20 && spawned);
         } 
       } else if (board[spaceY][spaceX] instanceof Wolf && organism instanceof Wolf) {
-        int winner = organism.compareTo((Animal)board[spaceY][spaceX]);
+        //This part of the code determines the outcome of a fight between wolves of the same gender
+        int winner = organism.compareTo((Animal)board[spaceY][spaceX]); //Calls the compareTo method, uses the comparable interface
         if (winner == 1) {
+          //The number determines who has more health
           board[spaceY][spaceX].changeHealth(-10);
           if (board[spaceY][spaceX].getHealth() < 1) {
+            //If the other wolf dies, then the organism moves onto the space
             board[organism.getY()][organism.getX()] = null;
             changeOrganismCoordinates(organism, direction);
             board[organism.getY()][organism.getX()] = organism;
           }
         } else if (winner == -1) {
+          //The other wolf doesn't move if it wins and the original wolf dies
           organism.changeHealth(-10);
           if (organism.getHealth() < 1) {
             board[organism.getY()][organism.getX()] = null;
           }
         } else {
+          //Determines who wins in the event of a tie
           int random = (int)(Math.floor(Math.random() * 2));
           if (random == 0) {
             organism.changeHealth(-10);
