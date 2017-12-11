@@ -5,7 +5,7 @@
  * 11/23/2017
  */ 
 
-abstract class Organism implements Moveable{
+abstract class Organism implements Moveable, Comparable{
   private int health;
   private int initialHealth; //This is used for plants
   private int x;
